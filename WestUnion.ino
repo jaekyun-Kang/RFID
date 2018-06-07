@@ -1,5 +1,6 @@
 #include<SPI.h>
 #include<MFRC522.h>
+#include<CapacitiveSensor.h>
 
 //creating mfrc522 instance
 #define RSTPIN 9
@@ -22,20 +23,27 @@ byte readcard[4]; //stores the UID of current tag which is read
 
 bool cardFlag = false;
 
+CapacitiveSensor capSensor = CapacitiveSensor(4,2);
+int threshold = 800;
+const int ledPin = 13;
+bool led_State = LOW;
+bool pass = false;
+
 void setup() {
-Serial.begin(9600);
+  Serial.begin(9600);
 
-SPI.begin();
-rc.PCD_Init(); //initialize the receiver  
-rc.PCD_DumpVersionToSerial(); //show details of card reader module
+  SPI.begin();
+  rc.PCD_Init(); //initialize the receiver  
+  rc.PCD_DumpVersionToSerial(); //show details of card reader module
 
-pinMode(5,OUTPUT); //red LED for LOCK
-pinMode(6,OUTPUT); //green LED for UnLock
+  pinMode(5,OUTPUT); //red LED for LOCK
+  pinMode(6,OUTPUT); //green LED for UnLock
+  pinMode(ledPin, OUTPUT); //Debug led for Capacity
 
-Serial.println(F("the authorised cards are")); //display authorised cards just to demonstrate you may comment this section out
-for(int i=0;i<N;i++){ 
-  Serial.print(i+1);
-  Serial.print("  ");
+  Serial.println(F("the authorised cards are")); //display authorised cards just to demonstrate you may comment this section out
+  for(int i=0;i<N;i++){ 
+    Serial.print(i+1);
+    Serial.print("  ");
     for(int j=0;j<4;j++){
       Serial.print(defcard[i][j],HEX);
     }
@@ -43,12 +51,31 @@ for(int i=0;i<N;i++){
   }
   Serial.println("");
   Serial.println(F("Scan Access Card to see Details"));
+
+  delay(50);
+}
+
+void TouchSensor(){
+  long sensorValue = capSensor.capacitiveSensor(30);
+  
+  Serial.println(sensorValue);
+
+  if(sensorValue > threshold){
+    if(pass==false){
+      pass = true;
+      led_State = !led_State;
+      digitalWrite(ledPin, led_State);
+    }
+    else{
+      pass = false;
+    }
+  }
 }
 
 void loop() {
   
-readsuccess = getid();
-
+  readsuccess = getid();
+  TouchSensor();
   if(readsuccess){
  
   int match=0;
@@ -101,6 +128,9 @@ int getid(){
 
   return 1;
 }
+
+
+
 
 
 
