@@ -23,11 +23,13 @@ byte readcard[4]; //stores the UID of current tag which is read
 
 bool cardFlag = false;
 
+/*
 CapacitiveSensor capSensor = CapacitiveSensor(4,2);
 int threshold = 800;
 const int ledPin = 13;
 bool led_State = LOW;
 bool pass = false;
+*/
 
 void setup() {
   Serial.begin(9600);
@@ -38,7 +40,8 @@ void setup() {
 
   pinMode(5,OUTPUT); //red LED for LOCK
   pinMode(6,OUTPUT); //green LED for UnLock
-  pinMode(ledPin, OUTPUT); //Debug led for Capacity
+  //pinMode(ledPin, OUTPUT); //Debug led for Capacity
+  pinMode(3, INPUT);
 
   Serial.println(F("the authorised cards are")); //display authorised cards just to demonstrate you may comment this section out
   for(int i=0;i<N;i++){ 
@@ -55,31 +58,16 @@ void setup() {
   delay(50);
 }
 
-void TouchSensor(){
-  long sensorValue = capSensor.capacitiveSensor(30);
-  
-  Serial.println(sensorValue);
-
-  if(sensorValue > threshold){
-    if(pass==false){
-      pass = true;
-      led_State = !led_State;
-      digitalWrite(ledPin, led_State);
-    }
-    else{
-      pass = false;
-    }
-  }
-}
-
 void loop() {
   
   readsuccess = getid();
-  TouchSensor();
+  //TouchSensor();
+  int test = digitalRead(3);
+  Serial.println(test);
   if(readsuccess){
  
   int match=0;
-
+ 
   //this is the part where compare the current tag with pre defined tags
     for(int i=0;i<N;i++){
 
@@ -128,7 +116,24 @@ int getid(){
 
   return 1;
 }
+/*
+void TouchSensor(){
+  long sensorValue = capSensor.capacitiveSensor(30);
+  
+  Serial.println(sensorValue);
 
+  if(sensorValue > threshold){
+    if(pass==false){
+      pass = true;
+      led_State = !led_State;
+      digitalWrite(ledPin, led_State);
+    }
+    else{
+      pass = false;
+    }
+  }
+}
+*/
 
 
 
