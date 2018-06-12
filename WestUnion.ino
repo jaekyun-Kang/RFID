@@ -2,7 +2,14 @@
 #include<MFRC522.h>
 #include<CapacitiveSensor.h>
 
-//creating mfrc522 instance
+/* pin structures
+SDA -> 10
+SCK -> 13
+MOSI -> 11
+MI -> 12
+RST -> 9
+*/
+
 #define RSTPIN 9
 #define SSPIN 10
 MFRC522 rc(SSPIN, RSTPIN);
