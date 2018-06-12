@@ -22,7 +22,9 @@ int N=2; //change this to the number of cards/tags you will use
 byte readcard[4]; //stores the UID of current tag which is read
 
 bool cardFlag = false;
-
+const int redLed = 7;
+const int greenLed = 6;
+const int lockPin = 3;
 /*
 CapacitiveSensor capSensor = CapacitiveSensor(4,2);
 int threshold = 800;
@@ -38,10 +40,11 @@ void setup() {
   rc.PCD_Init(); //initialize the receiver  
   rc.PCD_DumpVersionToSerial(); //show details of card reader module
 
-  pinMode(5,OUTPUT); //red LED for LOCK
-  pinMode(6,OUTPUT); //green LED for UnLock
+  pinMode(redLed,OUTPUT); //red LED for LOCK
+  pinMode(greenLed,OUTPUT); //green LED for UnLock
+  pinMode(lockPin,OUTPUT);
   //pinMode(ledPin, OUTPUT); //Debug led for Capacity
-  pinMode(3, INPUT);
+
 
   Serial.println(F("the authorised cards are")); //display authorised cards just to demonstrate you may comment this section out
   for(int i=0;i<N;i++){ 
@@ -54,7 +57,8 @@ void setup() {
   }
   Serial.println("");
   Serial.println(F("Scan Access Card to see Details"));
-
+  digitalWrite(redLed,HIGH);
+  digitalWrite(lockPin, LOW);
   delay(50);
 }
 
@@ -81,18 +85,43 @@ void loop() {
 
         if(i==1) { 
           Serial.println("Right Card");
-          digitalWrite(5,HIGH);
-          delay(2000);
-          digitalWrite(5,LOW);
-          delay(500); 
+          /*
+          digitalWrite(redLed,LOW);
+          digitalWrite(greenLed,HIGH);
+          delay(200);
+          digitalWrite(greenLed,LOW);
+          delay(100); 
+          digitalWrite(greenLed,HIGH);
+          digitalWrite(lockPin, HIGH);
+          */
+          UnLock();
+          delay(3000);
+          Lock();
+          /*
+          digitalWrite(lockPin, LOW);
+          digitalWrite(greenLed, LOW);
+          digitalWrite(redLed,HIGH);
+          */
+
         } 
       }
 
       else{ 
+        /*
+        digitalWrite(lockPin, LOW);
+        digitalWrite(greenLed,LOW);
+        digitalWrite(redLed,HIGH);
+        delay(100);
+        digitalWrite(redLed,LOW);
+        delay(100);
+        digitalWrite(redLed,HIGH);
+        */
+       Lock();
         Serial.println("CARD NOT Authorised");
       }
     }
   }
+  delay(10);
 }
 
 //function to get the UID of the card
@@ -115,6 +144,26 @@ int getid(){
   rc.PICC_HaltA();
 
   return 1;
+}
+
+void UnLock(){
+  digitalWrite(redLed, LOW);
+  digitalWrite(greenLed, HIGH);
+  delay(200);
+  digitalWrite(greenLed, LOW);
+  delay(200);
+  digitalWrite(greenLed, HIGH);
+  digitalWrite(lockPin, HIGH);
+}
+
+void Lock(){
+  digitalWrite(greenLed, LOW);
+  digitalWrite(redLed, HIGH);
+  delay(200);
+  digitalWrite(redLed, LOW);
+  delay(200);
+  digitalWrite(redLed, HIGH);
+  digitalWrite(lockPin, LOW);
 }
 /*
 void TouchSensor(){
