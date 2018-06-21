@@ -8,6 +8,9 @@ SCK -> 13
 MOSI -> 11
 MI -> 12
 RST -> 9
+
+Red Led - 7
+Green Led -6
 */
 
 #define RSTPIN 9
@@ -29,9 +32,9 @@ int N=2; //change this to the number of cards/tags you will use
 byte readcard[4]; //stores the UID of current tag which is read
 
 bool cardFlag = false;
-const int redLed = 7;
-const int greenLed = 6;
-const int lockPin = 3;
+const int redLed = 6;
+const int greenLed = 7;
+const int lockPin = 5;
 /*
 CapacitiveSensor capSensor = CapacitiveSensor(4,2);
 int threshold = 800;
@@ -39,6 +42,28 @@ const int ledPin = 13;
 bool led_State = LOW;
 bool pass = false;
 */
+
+/*
+
+5
+6
+7
+
+motor+
+motor-
+
+VIN
+GND
+GND
+
+Redlight
++
+-
+GreenLight
++
+-
+*/
+
 
 void setup() {
   Serial.begin(9600);
