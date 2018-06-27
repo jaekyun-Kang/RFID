@@ -23,7 +23,7 @@ int readsuccess;
 byte defcard[4]={0xC6,0xBA,0xFD,0x1B}; // if you only want one card
 byte defcard[][4]={{0xC6,0xBA,0xFD,0x1B},{0x5A,0x7A,0xDB,0x73},{0x53,0x60,0x6F,0x21}}; //for multiple cards
 */
-
+//First one is right one
 byte defcard[][4]={{0x53,0xA6,0xDE,0x2E},{0x53,0x4B,0x15,0x2E}}; 
 //e.g. scan the card you want to pair with the reader, and the serial port will print out the UID of this card, 
 //change the number to your UID here.If your UID is C6BAFD1B, just type {0xC6,0xBA,0xFD,0x1B}.  
@@ -32,8 +32,8 @@ int N=2; //change this to the number of cards/tags you will use
 byte readcard[4]; //stores the UID of current tag which is read
 
 bool cardFlag = false;
-const int redLed = 6;
-const int greenLed = 7;
+const int redLed = 7;
+const int greenLed = 6;
 const int lockPin = 5;
 /*
 CapacitiveSensor capSensor = CapacitiveSensor(4,2);
@@ -75,7 +75,6 @@ void setup() {
   pinMode(redLed,OUTPUT); //red LED for LOCK
   pinMode(greenLed,OUTPUT); //green LED for UnLock
   pinMode(lockPin,OUTPUT);
-  //pinMode(ledPin, OUTPUT); //Debug led for Capacity
 
 
   Serial.println(F("the authorised cards are")); //display authorised cards just to demonstrate you may comment this section out
@@ -89,7 +88,7 @@ void setup() {
   }
   Serial.println("");
   Serial.println(F("Scan Access Card to see Details"));
-  digitalWrite(redLed,HIGH);
+  digitalWrite(greenLed,HIGH);
   digitalWrite(lockPin, LOW);
   delay(50);
 }
@@ -117,37 +116,12 @@ void loop() {
 
         if(i==1) { 
           Serial.println("Right Card");
-          /*
-          digitalWrite(redLed,LOW);
-          digitalWrite(greenLed,HIGH);
-          delay(200);
-          digitalWrite(greenLed,LOW);
-          delay(100); 
-          digitalWrite(greenLed,HIGH);
-          digitalWrite(lockPin, HIGH);
-          */
           UnLock();
-          delay(3000);
           Lock();
-          /*
-          digitalWrite(lockPin, LOW);
-          digitalWrite(greenLed, LOW);
-          digitalWrite(redLed,HIGH);
-          */
-
         } 
       }
 
       else{ 
-        /*
-        digitalWrite(lockPin, LOW);
-        digitalWrite(greenLed,LOW);
-        digitalWrite(redLed,HIGH);
-        delay(100);
-        digitalWrite(redLed,LOW);
-        delay(100);
-        digitalWrite(redLed,HIGH);
-        */
        Lock();
         Serial.println("CARD NOT Authorised");
       }
@@ -179,22 +153,21 @@ int getid(){
 }
 
 void UnLock(){
-  digitalWrite(redLed, LOW);
+  digitalWrite(lockPin, HIGH);
+  for(int i = 0; i<3; i++){
+  digitalWrite(greenLed, LOW);
+  delay(200);
   digitalWrite(greenLed, HIGH);
   delay(200);
   digitalWrite(greenLed, LOW);
   delay(200);
   digitalWrite(greenLed, HIGH);
-  digitalWrite(lockPin, HIGH);
+  delay(200);
+  } 
 }
 
 void Lock(){
-  digitalWrite(greenLed, LOW);
-  digitalWrite(redLed, HIGH);
-  delay(200);
-  digitalWrite(redLed, LOW);
-  delay(200);
-  digitalWrite(redLed, HIGH);
+  digitalWrite(greenLed, HIGH);
   digitalWrite(lockPin, LOW);
 }
 /*
