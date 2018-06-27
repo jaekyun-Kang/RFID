@@ -100,7 +100,10 @@ void loop() {
   int test = digitalRead(3);
   Serial.println(test);
   if(readsuccess){
- 
+      UnLock();
+      Lock();
+    
+   /*
   int match=0;
  
   //this is the part where compare the current tag with pre defined tags
@@ -125,7 +128,10 @@ void loop() {
        Lock();
         Serial.println("CARD NOT Authorised");
       }
-    }
+    }*/
+  }
+  else{
+    Lock();
   }
   delay(10);
 }
@@ -155,14 +161,14 @@ int getid(){
 void UnLock(){
   digitalWrite(lockPin, HIGH);
   for(int i = 0; i<3; i++){
-  digitalWrite(greenLed, LOW);
-  delay(200);
-  digitalWrite(greenLed, HIGH);
-  delay(200);
-  digitalWrite(greenLed, LOW);
-  delay(200);
-  digitalWrite(greenLed, HIGH);
-  delay(200);
+    digitalWrite(greenLed, LOW);
+    delay(200);
+    digitalWrite(greenLed, HIGH);
+    delay(200);
+    digitalWrite(greenLed, LOW);
+    delay(200);
+    digitalWrite(greenLed, HIGH);
+    delay(200);
   } 
 }
 
